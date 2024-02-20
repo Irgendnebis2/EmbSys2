@@ -1,0 +1,79 @@
+\documentclass[10pt,a4paper,twoside,openright,titlepage,twocolumn]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[ngerman]{babel,varioref}
+\usepackage[left=0.7cm,right=0.7cm,top=0.7cm,bottom=0.7cm,includeheadfoot]{geometry}
+
+
+
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{graphicx}
+\usepackage{xcolor}
+\usepackage{wrapfig}
+\usepackage{siunitx}
+\usepackage{titlesec}
+\usepackage{titlepic}
+\usepackage{listings}
+\usepackage[export]{adjustbox}
+
+
+\graphicspath{ {./Images/} }
+
+
+\definecolor{formulablue}{RGB}{219,219,255}
+\newcommand{\formula}[1]{\colorbox{formulablue}{#1}}
+
+\newcommand{\unitText}[3]{\noindent\textit{#1} : #2 [#3]}
+
+\definecolor{refrot}{RGB}{183,28,42}
+\newcommand{\refskript}[1]{\textcolor{refrot}{Skript S.#1}}
+
+
+\setlength{\parindent}{0pt}
+
+\titlespacing*{\section}{0pt}{12pt}{0pt}
+\titlespacing*{\subsection}{0pt}{0pt}{0pt}
+\titlespacing*{\subsubsection}{0pt}{0pt}{0pt}
+
+
+\title{\vspace{50mm}EmbSys2\\ [1ex] \large Formelsammlung}
+\author{Nico Weber ©Seb. Humbel}
+\titlepic{\vspace{50mm}\includegraphics[width=0.25\textwidth]{Elvis}}
+
+
+% Code format
+% Define the Gruvbox light colors
+\definecolor{gruvbox_bg}{HTML}{fbf1c7}
+\definecolor{gruvbox_fg}{HTML}{3c3836}
+\definecolor{gruvbox_yellow}{HTML}{d79921}
+\definecolor{gruvbox_red}{HTML}{cc241d}
+\definecolor{gruvbox_green}{HTML}{98971a}
+\definecolor{gruvbox_blue}{HTML}{458588}
+\definecolor{gruvbox_purple}{HTML}{b16286}
+\definecolor{gruvbox_aqua}{HTML}{689d6a}
+\definecolor{gruvbox_orange}{HTML}{d65d0e}
+
+
+\lstdefinestyle{cppstyle}{
+	language=C++,
+	basicstyle=\ttfamily\footnotesize,
+	numbers=left,
+	numberstyle=\tiny,
+	numbersep=5pt,
+	tabsize=4,
+	showspaces=false,
+	showstringspaces=false,
+	frame=single,
+	rulecolor=\color{gruvbox_fg},
+	backgroundcolor=\color{white},
+	keywordstyle=\color{gruvbox_orange},
+	commentstyle=\color{gruvbox_aqua},
+	stringstyle=\color{gruvbox_green},
+	identifierstyle=\color{gruvbox_fg},
+	emphstyle=\color{gruvbox_red},
+	emph={int, double, string, cout},
+	xleftmargin=10pt,
+	xrightmargin=\parindent
+}
+

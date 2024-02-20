@@ -1,0 +1,1 @@
+"./main.obj" "./tm4c1294ncpdt_startup_ccs.obj" "./HAL/GPIO/hal_gpio.obj" "./HAL/TIMER/hal_timer.obj" "./UTILS/utils.obj" "../ESP_EKTM4C1294XL.lib" "../tm4c1294ncpdt.cmd" -llibc.a 

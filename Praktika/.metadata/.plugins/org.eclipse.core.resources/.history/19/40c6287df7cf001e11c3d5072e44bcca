@@ -1,0 +1,239 @@
+/**
+ ****************************************************************
+ @file    hal_gpio.c
+ ****************************************************************
+ @brief   This module offers a set of functions to handle GPIO's.
+ @brief	  Global GPIO-ISRs are inside here, with callBackfunction to
+ @brief	  every single callBackfunction for every bit.
+ ****************************************************************
+ @author  Adrian Tuescher, IMES/HSR
+ @version 01.000
+ @date    2017-02-20
+ ****************************************************************
+ */
+// --- Includes
+#include <stdint.h>
+#include <stdbool.h>
+#include "hal_gpio.h"
+#include "../tm4c1294ncpdt.h"
+
+// --- Defines
+
+// --- Typedefs
+
+// --- Local Function Prototypes
+void _hal_gpio_portHISR(void);
+void _hal_gpio_portJISR(void);
+void _hal_gpio_portKISR(void);
+void _hal_gpio_portMISR(void);
+
+// --- Variables
+
+/**
+ ****************************************************************
+ @brief	Initialize a all GPIOs of the TM4C1294XL-LaunchPad.
+ @param  -
+ @return -
+ ****************************************************************
+ */
+void hal_gpio_init(void)
+{
+  ///@todo Aufgabe 2.2.1 und 2.2.2 GPIO Konfigurieren
+	SYSCTL_RCGCGPIO_R |= 0x1000;
+	GPIO_PORTN_DIR_R 	|= 0x03;
+	GPIO_PORTN_DR2R_R 	|= 0x03;
+	GPIO_PORTN_DATA_R	&= ~0x03;
+	GPIO_PORTN_DEN_R	|= 0x03;
+	GPIO_PORTF_DIR_R 	|= 0x11;
+	GPIO_PORTF_DR8R_R	|= 0x11;
+	GPIO_PORTF_DATA_R	&= ~0x11;
+	GPIO_PORTF_DEN_R	|= 0x11;
+	GPIO_PORTJ_DIR_R	&= ~0x01;
+	GPIO_PORTJ_PUR_R	|= 0x01;
+	GPIO_PORTJ_DEN_R	|= 0x01;
+  ///@todo Aufgabe 2.3.1 Interrupt Konfigurieren
+
+}
+
+/**
+ ****************************************************************
+ @brief  Register a callback function for one of the possible input GPIO's.
+ @param  gpio    One of the possible gpio from enumeration
+ @param  pCallbackFct Callback function for this input.
+ @return -
+ ****************************************************************
+ */
+void hal_gpio_interruptCallbackFctRegister(gpioPeripherie_t gpio, pFctHandler pCallbackFct)
+{
+  // note: callback registration not yet used in this code example - for use, see more advanced hal_gpio_timer.c
+}
+
+/**
+ ****************************************************************
+ @brief  Enable interrupt for one of the possible GPIOs from enumeration.
+ @param  gpio    One of the possible gpio from enumeration
+ @return -
+ ****************************************************************
+ */
+void hal_gpio_interruptEnable(gpioPeripherie_t gpio)
+{
+  switch(gpio)
+  {
+    case GPIO_USR_SW1: //PJ0
+      ///@todo Aufgabe 2.3.1 Interrupt Konfigurieren
+      //GPIO_PORTJ_IM_R ...
+      break;
+    case GPIO_USR_SW2: //PJ1
+      GPIO_PORTJ_IM_R |= 0x00000002;
+      break;
+    default:
+      break;
+  }
+}
+
+/**
+ ****************************************************************
+ @brief  Disable interrupt for one of the possible GPIOs from enumeration.
+ @param  gpio    One of the possible gpio from enumeration
+ @return -
+ ****************************************************************
+ */
+void hal_gpio_interruptDisable(gpioPeripherie_t gpio)
+{
+  switch(gpio)
+  {
+    case GPIO_USR_SW1: //PJ0
+      ///@todo Aufgabe 2.3.1 Interrupt Konfigurieren
+      //GPIO_PORTJ_IM_R ...
+      break;
+    case GPIO_USR_SW2: //PJ1
+      GPIO_PORTJ_IM_R &= ~0x00000002;
+      break;
+    default:
+      break;
+  }
+}
+
+/**
+ ****************************************************************
+ @brief  Read a complete port.
+ @param  gpio    One of the possible gpio from enumeration
+ @return Return true, if a button is pressed.
+ ****************************************************************
+ */
+bool_t hal_gpio_read(gpioPeripherie_t gpio)
+{
+  bool_t res = false;
+  switch(gpio)
+  {
+    case GPIO_USR_SW1:  //if zero, button is pressed
+      ///@todo Aufgabe 2.2.3 Taster einlesen
+    	res = ((GPIO_PORTJ_DATA_R & 0x01) == 0x01);
+      break;
+    default:
+      break;
+  }
+  return res;
+}
+
+/**
+ ****************************************************************
+ @brief  Write a port or just single bits (depending on selected gpio)
+ @param  gpio  One of the possible gpio from enumeration
+ @param  on    If true, led is turn on
+ @return -
+ ****************************************************************
+ */
+void hal_gpio_write(gpioPeripherie_t gpio, bool_t on)
+{
+  switch(gpio)
+  {
+    case GPIO_D1: //PortN1
+      ///@todo Aufgabe 2.2.3 LED_D1 löschen/setzen
+    	if(on){
+    		GPIO_PORTN_DATA_R |= 0x02;
+    	}
+    	else{
+    		GPIO_PORTN_DATA_R &= ~0x02;
+    	}
+      break;
+    case GPIO_D2: //PortN0
+      ///@todo Aufgabe 2.2.3 LED_D2 löschen/setzen
+    	if(on){
+    		GPIO_PORTN_DATA_R |= 0x01;
+    	}
+    	else{
+    		GPIO_PORTN_DATA_R &= ~0x01;
+    	}
+      break;
+    case GPIO_D3: //PortF4
+      ///@todo Aufgabe 2.2.3 LED_D3 löschen/setzen
+    	if(on){
+    		GPIO_PORTF_DATA_R |= 0x08;
+    	}
+    	else{
+    		GPIO_PORTF_DATA_R &= ~0x08;
+    	}
+      break;
+    case GPIO_D4: //PortF0
+      ///@todo Aufgabe 2.2.3 LED_D4 löschen/setzen
+    	if(on){
+    		GPIO_PORTF_DATA_R |= 0x01;
+    	}
+    	else{
+    		GPIO_PORTF_DATA_R &= ~0x01;
+    	}
+      break;
+    default:
+      break;
+  }
+}
+
+/**
+ ****************************************************************
+ @brief  Interrupt service routine of portH.
+ @param  -
+ @return -
+ ****************************************************************
+ */
+void _hal_gpio_portHISR(void)
+{
+  // note: callback registration not yet used in this code example - for use, see more advanced hal_gpio_timer.c
+}
+
+/**
+ ****************************************************************
+ @brief  Interrupt service routine of portJ.
+ @param  -
+ @return -
+ ****************************************************************
+ */
+void _hal_gpio_portJISR(void)
+{
+  ///@todo Aufgabe 2.3.3 Interrupt auswerten
+
+}
+
+/**
+ ****************************************************************
+ @brief  Interrupt service routine of portK.
+ @param  -
+ @return -
+ ****************************************************************
+ */
+void _hal_gpio_portKISR(void)
+{
+  // note: callback registration not yet used in this code example - for use, see more advanced hal_gpio_timer.c
+}
+
+/**
+ ****************************************************************
+ @brief  Interrupt service routine of portM.
+ @param  -
+ @return -
+ ****************************************************************
+ */
+void _hal_gpio_portMISR(void)
+{
+  // note: callback registration not yet used in this code example - for use, see more advanced hal_gpio_timer.c
+}
